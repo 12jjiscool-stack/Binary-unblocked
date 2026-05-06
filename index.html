@@ -1,1 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GameHub</title>
 
+<style>
+body {
+    margin: 0;
+    font-family: Arial;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+}
+
+:root {
+    --bg: #0f172a;
+    --text: white;
+    --card: #1e293b;
+}
+
+.light {
+    --bg: #f1f5f9;
+    --text: black;
+    --card: #e2e8f0;
+}
+
+.neon {
+    --bg: black;
+    --text: #39ff14;
+    --card: #111;
+}
+
+header {
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.3);
+}
+
+button {
+    padding: 8px 12px;
+    border: none;
+    cursor: pointer;
+    border-radius: 6px;
+}
+
+.container {
+    padding: 20px;
+}
+
+.card {
+    background: var(--card);
+    padding: 15px;
+    margin: 10px;
+    border-radius: 10px;
+    display: inline-block;
+    width: 200px;
+    transition: 0.3s;
+}
+
+.card:hover {
+    transform: scale(1.05);
+}
+
+canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="particles"></canvas>
+
+<header>
+    <h2>GameHub</h2>
+    <div>
+        <button onclick="setTheme('')">Dark</button>
+        <button onclick="setTheme('light')">Light</button>
+        <button onclick="setTheme('neon')">Neon</button>
+    </div>
+</header>
+
+<div class="container" id="login">
+    <h2>Enter Access Key</h2>
+    <input id="keyInput" placeholder="Enter key...">
+    <button onclick="checkKey()">Enter</button>
+    <p id="status"></p>
+</div>
+
+<div class="container" id="games" style="display:none;">
+    <h2>Games</h2>
+
+    <div class="card">Game 1<br><small>Add your embed</small></div>
+    <div class="card">Game 2<br><small>Add your embed</small></div>
+    <div class="card">Game 3<br><small>Add your embed</small></div>
+
+</div>
+
+<script>
+// THEMES
+function setTheme(t) {
+    document.body.className = t;
+}
+
+// KEY SYSTEM (demo only)
+const validKeys = [
+    "GH-9X2K-ALPHA",
+    "GH-7Q8Z-BETA",
+    "GH-5M1P-GAMMA"
+];
+
+function checkKey() {
+    const input = document.getElementById("keyInput").value;
+
+    if(validKeys.includes(input)) {
+        document.getElementById("login").style.display = "none";
+        document.getElementById("games").style.display = "block";
+    } else {
+        document.getElementById("status").innerText = "Invalid key";
+    }
+}
+
+// PARTICLES
+const canvas = document.getElementById("particles");
+const ctx = canvas.getContext("2d");
+
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+let particles = [];
+
+for(let i=0;i<100;i++){
+    particles.push({
+        x: Math.random()*canvas.width,
+        y: Math.random()*canvas.height,
+        vx: Math.random()*2-1,
+        vy: Math.random()*2-1
+    });
+}
+
+function animate(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+
+    particles.forEach(p=>{
+        p.x += p.vx;
+        p.y += p.vy;
+
+        if(p.x<0||p.x>canvas.width) p.vx *= -1;
+        if(p.y<0||p.y>canvas.height) p.vy *= -1;
+
+        ctx.fillStyle = "white";
+        ctx.fillRect(p.x,p.y,2,2);
+    });
+
+    requestAnimationFrame(animate);
+}
+
+animate();
+</script>
+
+</body>
+</html>
